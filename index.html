@@ -164,6 +164,73 @@
   .mascot-bubble{position:relative;background:rgba(255,255,255,.95);color:#3a2a55;font-weight:700;font-size:14px;font-family:'Baloo Thai 2',sans-serif;padding:9px 13px;border-radius:14px;max-width:220px;box-shadow:0 4px 16px rgba(0,0,0,.25);opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s;line-height:1.35;}
   .mascot-bubble.show{opacity:1;transform:none;}
   .mascot-bubble::before{content:'';position:absolute;left:-7px;top:50%;transform:translateY(-50%);border:7px solid transparent;border-right-color:rgba(255,255,255,.95);border-left:none;}
+  /* === Mascot Expressions (Phase 2) === */
+  .mascot .m-star{transition:transform .4s cubic-bezier(.2,.9,.3,1),filter .4s ease;}
+  .mascot .m-eye{transition:all .3s ease;transform-origin:center;}
+  .mascot .m-mouth{transition:all .3s ease;}
+  .mascot .m-cheek{transition:all .3s ease;}
+  /* happy: ตาหลับยิ้ม + แก้มชมพู */
+  .mascot.exp-happy .m-eye{height:3px;border-radius:2px;background:transparent;border-top:2.5px solid #5a3a12;transform:translateY(2px);}
+  .mascot.exp-happy .m-eye::after{display:none;}
+  .mascot.exp-happy .m-mouth{width:14px;height:7px;border-width:2.5px;}
+  .mascot.exp-happy .m-cheek{background:rgba(255,150,180,.7);width:10px;height:6px;}
+  /* sleepy: ตาปิด + ปากเล็ก + เอียง */
+  .mascot.exp-sleepy .m-eye{height:2px;border-radius:2px;background:transparent;border-top:2.5px solid #5a3a12;transform:translateY(3px);}
+  .mascot.exp-sleepy .m-eye::after{display:none;}
+  .mascot.exp-sleepy .m-mouth{width:6px;height:6px;border-radius:50%;border:2px solid #5a3a12;background:#5a3a12;}
+  .mascot.exp-sleepy .m-star{filter:brightness(.85) saturate(.9);}
+  /* excited: ตาโต + ปากโอ + ขยาย */
+  .mascot.exp-excited .m-eye{width:9px;height:11px;}
+  .mascot.exp-excited .m-eye::after{width:3.5px;height:3.5px;}
+  .mascot.exp-excited .m-mouth{width:10px;height:10px;border-radius:50%;border:2.5px solid #5a3a12;background:#5a3a12;}
+  .mascot.exp-excited .m-cheek{background:rgba(255,180,200,.8);width:11px;height:7px;}
+  .mascot.exp-excited .m-star{transform:scale(1.08);}
+  /* thinking: ตามองขึ้นบน + ปากเล็ก */
+  .mascot.exp-thinking .m-eye{transform:translateY(-2px);}
+  .mascot.exp-thinking .m-eye::after{top:-1px;left:2px;}
+  .mascot.exp-thinking .m-mouth{width:5px;height:5px;border-radius:50%;border:2px solid #5a3a12;}
+  /* proud: ตาหลับ + ยิ้มกว้าง + แก้มใหญ่ */
+  .mascot.exp-proud .m-eye{height:3px;border-radius:2px;background:transparent;border-top:2.5px solid #5a3a12;transform:translateY(2px) rotate(-8deg);}
+  .mascot.exp-proud .m-eye.re{transform:translateY(2px) rotate(8deg);}
+  .mascot.exp-proud .m-eye::after{display:none;}
+  .mascot.exp-proud .m-mouth{width:16px;height:8px;border-width:2.5px;}
+  .mascot.exp-proud .m-cheek{background:rgba(255,150,180,.75);width:12px;height:7px;}
+  /* sad: ตาตก + ปากคว่ำ */
+  .mascot.exp-sad .m-eye{transform:translateY(1px) rotate(-15deg);}
+  .mascot.exp-sad .m-eye.re{transform:translateY(1px) rotate(15deg);}
+  .mascot.exp-sad .m-mouth{width:12px;height:6px;border:2px solid #5a3a12;border-bottom:none;border-radius:12px 12px 0 0;top:52%;}
+  .mascot.exp-sad .m-star{filter:brightness(.8) saturate(.8);}
+  /* confused: ตาเขม่น + เอียง */
+  .mascot.exp-confused .m-eye{height:5px;}
+  .mascot.exp-confused .m-eye.le{transform:translateY(-2px);}
+  .mascot.exp-confused .m-eye.re{transform:translateY(2px);}
+  .mascot.exp-confused .m-mouth{width:6px;height:6px;border-radius:50%;border:2px solid #5a3a12;}
+  /* idle: ค่าปกติ (ไม่ต้อง override) */
+  .mascot.exp-idle .m-eye{}
+  /* Zzz สำหรับ sleepy */
+  .mascot .zzz{position:absolute;top:-12px;right:-8px;font-size:14px;color:rgba(255,255,255,.6);font-family:'Baloo Thai 2';font-weight:700;opacity:0;transition:opacity .5s;pointer-events:none;}
+  .mascot.exp-sleepy .zzz{opacity:1;animation:zzzFloat 2.5s ease-in-out infinite;}
+  @keyframes zzzFloat{0%,100%{transform:translateY(0) scale(.8);opacity:.4;}50%{transform:translateY(-6px) scale(1);opacity:.8;}}
+  /* ? สำหรับ confused */
+  .mascot .qmark{position:absolute;top:-14px;right:-6px;font-size:16px;color:var(--star);font-family:'Baloo Thai 2';font-weight:800;opacity:0;transition:opacity .5s;pointer-events:none;}
+  .mascot.exp-confused .qmark{opacity:1;animation:qBounce 1.2s ease-in-out infinite;}
+  @keyframes qBounce{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-4px) rotate(8deg);}}
+
+  /* === Bedtime Story Mode (Phase 3) === */
+  .bedtime-btn{display:none;align-items:center;gap:8px;margin:18px auto 8px;padding:12px 22px;border-radius:99px;background:linear-gradient(135deg,#2a1f5a,#4a3a8a);border:1.5px solid rgba(255,215,94,.3);color:#fff;font-family:'Baloo Thai 2';font-weight:700;font-size:15px;cursor:pointer;transition:.25s;box-shadow:0 4px 18px rgba(74,58,138,.4);}
+  .bedtime-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(74,58,138,.55);border-color:var(--star);}
+  .bedtime-btn.show{display:flex;animation:riseIn .4s ease;}
+  .bedtime-btn .bt-ic{font-size:20px;animation:moonBob 3s ease-in-out infinite;}
+  @keyframes moonBob{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-3px) rotate(5deg);}}
+  .bedtime-overlay{z-index:78;}
+  .bedtime-overlay .modal{max-width:440px!important;background:linear-gradient(180deg,#1a1240 0%,#2d1f5a 100%);}
+  .bedtime-overlay .cel-emoji{font-size:70px;}
+  .bedtime-story{background:rgba(255,255,255,.06);border-radius:14px;padding:16px;margin:14px 0;font-family:'Mali';font-size:15px;line-height:1.7;color:#fff;max-height:280px;overflow:auto;white-space:pre-line;border:1px solid rgba(255,255,255,.1);}
+  .bedtime-story:empty::before{content:'🌙 กำลังเตรียมนิทาน...';color:var(--soft);font-style:italic;}
+  .bedtime-controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+  .bedtime-controls .soundbtn{width:46px;height:46px;font-size:22px;}
+  .bedtime-loading{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,215,94,.3);border-top-color:var(--star);border-radius:50%;animation:spin 0.8s linear infinite;}
+
   .hometabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:18px 0 16px;}
   .hometab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:16px;border:1.5px solid var(--card-line);background:rgba(255,255,255,.05);color:var(--soft);cursor:pointer;transition:.15s;-webkit-tap-highlight-color:transparent;}
   .hometab:active{transform:scale(.95);}
@@ -487,11 +554,12 @@
     <h1 class="title">สะสมดาว <span class="em">⭐</span></h1>
     <div class="hero-name" id="heroName">ดาวของหนู</div>
     <div class="note-banner" id="noteBanner" style="display:none"></div>
+    <button class="bedtime-btn" id="bedtimeBtn" aria-label="ฟังนิทานก่อนนอน"><span class="bt-ic">🌙</span><span>ฟังนิทานก่อนนอน</span></button>
   </div>
   <div class="hero reveal" style="animation-delay:.15s">
     <div class="moon-wrap"><div class="moon" id="moon"><div class="count"><span class="count-inner" id="countInner">0</span></div><span class="orbit"><span class="orbit-star">⭐</span></span></div></div>
     <div class="hero-label">ดวงที่สะสมได้</div>
-    <div class="mascot-wrap" id="mascotWrap"><button class="mascot" id="mascot" aria-label="น้องดาว แตะเพื่อทักทาย"><span class="m-star"><span class="m-eye le"></span><span class="m-eye re"></span><span class="m-cheek lc"></span><span class="m-cheek rc"></span><span class="m-mouth"></span></span></button><div class="mascot-bubble" id="mascotBubble">สวัสดีจ้า! 🌟</div></div>
+    <div class="mascot-wrap" id="mascotWrap"><button class="mascot" id="mascot" aria-label="น้องดาว แตะเพื่อทักทาย"><span class="m-star"><span class="m-eye le"></span><span class="m-eye re"></span><span class="m-cheek lc"></span><span class="m-cheek rc"></span><span class="m-mouth"></span><span class="zzz">Z</span><span class="qmark">?</span></span></button><div class="mascot-bubble" id="mascotBubble">สวัสดีจ้า! 🌟</div></div>
     <div class="cluster" id="cluster"></div>
   </div>
   <div class="hometabs" id="homeTabs"><button class="hometab on" data-hp="tasks"><span class="ht-ic">🎯</span><span class="ht-tx">ภารกิจ</span></button><button class="hometab" data-hp="skill"><span class="ht-ic">✍️</span><span class="ht-tx">ฝึกทักษะ</span></button><button class="hometab" data-hp="progress"><span class="ht-ic">🏆</span><span class="ht-tx">ก้าวหน้า</span></button><button class="hometab" data-hp="family"><span class="ht-ic">🎡</span><span class="ht-tx">ครอบครัว</span></button></div>
@@ -610,6 +678,9 @@
 
 <!-- Share Card Overlay (new) -->
 <div class="overlay" id="shareCardOverlay" style="z-index:79"><div class="modal share-card-modal"><button class="pm-close" id="shareCardClose" aria-label="ปิด">✕</button><div class="cel-emoji">📤</div><h4>การ์ดดาวประจำสัปดาห์</h4><p>แชร์ความตัวของหนูได้เลย</p><canvas id="shareCanvas" width="800" height="1000"></canvas><div class="modal-btns" style="margin-top:12px;gap:8px"><button class="btn btn-gold" id="downloadCard">⬇️ ดาวน์โหลด</button><button class="btn btn-ghost" id="shareCardWeb">📤 แชร์</button></div></div></div>
+
+<!-- Bedtime Story Overlay (Phase 3) -->
+<div class="overlay bedtime-overlay" id="bedtimeOverlay"><div class="modal"><button class="pm-close" id="bedtimeClose" aria-label="ปิด">✕</button><div class="cel-emoji" id="bedtimeMascot">🌙</div><h4 id="bedtimeTitle">นิทานก่อนนอน</h4><p id="bedtimeSub" style="color:var(--soft);font-size:13px">น้องดาวจะเล่านิทานจากดาวที่หนูสะสมวันนี้</p><div class="bedtime-story" id="bedtimeStory"></div><div class="bedtime-controls"><button class="soundbtn" id="bedtimePlay" aria-label="เล่นเสียง">▶️</button><button class="soundbtn" id="bedtimeStop" aria-label="หยุดเสียง">⏹️</button><button class="btn btn-gold" id="bedtimeNewStory" style="padding:10px 18px;font-size:14px">✨ นิทานใหม่</button></div></div></div>
 
 <div class="overlay" id="installHelp" style="z-index:81"><div class="modal"><button class="pm-close" id="installHelpClose" aria-label="ปิด">✕</button><div class="cel-emoji">📲</div><h4>ติดตั้งแอปลงเครื่อง</h4><p id="installLead">ติดตั้งแล้วเปิดจากหน้าจอโฮมได้เหมือนแอปจริง เต็มจอ เปิดเร็ว</p><div id="installSteps" style="text-align:left;margin:6px 0 4px"></div><button class="btn btn-gold" id="installNowBtn" style="width:100%;display:none">ติดตั้งเลย 📲</button></div></div>
 
@@ -746,13 +817,13 @@ function openBox(){$('boxBtn').style.display='none';const bonus=1+Math.floor(Mat
 /* core */
 function checkMilestone(prev){const c=state.rewards.filter(r=>prev<r.threshold&&state.count>=r.threshold).sort((a,b)=>a.threshold-b.threshold);if(c.length){celebrate(c[c.length-1]);playUnlock();}}
 const STICKER_MILES=[{n:10,e:'🌟'},{n:25,e:'🦄'},{n:50,e:'🚀'},{n:75,e:'🌈'},{n:100,e:'👑'},{n:150,e:'🐉'},{n:200,e:'🏆'},{n:300,e:'💎'},{n:500,e:'🎓'}];
-const PRAISE=['เก่งมากเลย!','สุดยอดไปเลย!','หนูทำได้แล้ว!','ดีมาก ๆ จ้ะ!','เยี่ยมมาก!','ภูมิใจในตัวหนูนะ!','เก่งที่สุดเลย!'];
-function praise(){if(!state||!state.sound)return;try{speak(PRAISE[Math.floor(Math.random()*PRAISE.length)],'th');}catch(_){}}
-const MASCOT_GREET=['สวัสดีจ้า! มาเก็บดาวกันเถอะ ⭐','หวัดดีหนู! วันนี้สดใสจัง 🌟','ดีจ้า น้องดาวมาเป็นเพื่อนแล้ว ✨','ยิ้มหน่อยจ้า เก่งที่สุดเลย! 💛'];
+const PRAISE=['เก่งมากเลยจ้ะ!','สุดยอดไปเลยนะ!','หนูทำได้แล้ว ดีใจจัง!','ดีมาก ๆ จ้ะ!','เยี่ยมมากเลย!','ภูมิใจในตัวหนูนะ!','เก่งที่สุดเลยจ้ะ!'];
+function praise(){if(!state||!state.sound)return;try{const emos=['cheerful','excited','happy'];speak(PRAISE[Math.floor(Math.random()*PRAISE.length)],'th',emos[Math.floor(Math.random()*emos.length)]);}catch(_){}}
+const MASCOT_GREET=['สวัสดีจ้า! มาเก็บดาวกันเถอะนะ','หวัดดีหนู! วันนี้สดใสจังเลย','ดีจ้า น้องดาวมาเป็นเพื่อนแล้วจ้ะ','ยิ้มหน่อยจ้า เก่งที่สุดเลยนะ'];
 const MASCOT_TIPS=['ฝึกเขียนวันนี้หรือยังเอ่ย? ✍️','ลองเล่นเกมจับคู่สิ สนุกนะ 🧩','ภารกิจวันนี้ทำครบไหมน้า? 📋','เก็บดาวครบเป้าได้เหรียญด้วยนะ 🏅','หนูทำได้อยู่แล้ว สู้ ๆ! 💪','อย่าลืมหมุนวงล้อนะ 🎡'];
 const MASCOT_CHEER=['เยี่ยมไปเลย! ⭐','เก่งมาก ๆ! 🌟','สุดยอดดด! 🎉','ได้ดาวแล้ว ดีใจจัง! ✨','หนูเก่งที่สุดเลย! 💛','โอ้โห เก่งจัง! 👏'];
 function _mrand(a){return a[Math.floor(Math.random()*a.length)];}
-function mascotSay(text,opts){opts=opts||{};const b=$('mascotBubble');if(!b)return;b.textContent=text;b.classList.remove('show');void b.offsetWidth;b.classList.add('show');const m=$('mascot');if(m&&opts.bounce){m.classList.remove('cheer');void m.offsetWidth;m.classList.add('cheer');setTimeout(()=>m.classList.remove('cheer'),650);}if(opts.speak&&state&&state.sound){const t=(text||'').replace(/[^\u0E00-\u0E7F\sA-Za-z0-9!?]/g,'').trim();if(t)speak(t,'th');}}
+function mascotSay(text,opts){opts=opts||{};const b=$('mascotBubble');if(!b)return;b.textContent=text;b.classList.remove('show');void b.offsetWidth;b.classList.add('show');const m=$('mascot');if(m&&opts.bounce){m.classList.remove('cheer');void m.offsetWidth;m.classList.add('cheer');setTimeout(()=>m.classList.remove('cheer'),650);}if(opts.speak&&state&&state.sound){const t=(text||'').replace(/[^\u0E00-\u0E7F\sA-Za-z0-9!?]/g,'').trim();if(t)speak(t,'th',opts.emotion||'cheerful');}}
 function mascotCheer(){mascotSay(_mrand(MASCOT_CHEER),{bounce:true});}
 let _mascotIdle=null;
 function mascotInit(){if(!$('mascot'))return;mascotSay(_mrand(MASCOT_GREET));clearInterval(_mascotIdle);_mascotIdle=setInterval(()=>mascotSay(_mrand(MASCOT_TIPS)),15000);}
@@ -859,8 +930,142 @@ function segmentName(str){str=(str||'').toString();try{const seg=new Intl.Segmen
 let _voices=[];
 function loadVoices(){try{_voices=window.speechSynthesis.getVoices()||[];}catch(_){_voices=[];}}
 if('speechSynthesis' in window){loadVoices();try{window.speechSynthesis.onvoiceschanged=loadVoices;}catch(_){}}
-function pickVoice(lang){const pref=lang==='th'?'th':'en';let vs=(_voices&&_voices.length)?_voices:((window.speechSynthesis&&window.speechSynthesis.getVoices())||[]);vs=vs.filter(v=>(v.lang||'').toLowerCase().indexOf(pref)===0);if(pref==='en'){const us=vs.filter(v=>(v.lang||'').toLowerCase().indexOf('en-us')===0);if(us.length)vs=us;}if(!vs.length)return null;const bad=/compact|eloquence|espeak/i;const pool=vs.filter(v=>!bad.test(v.name));const use=pool.length?pool:vs;const ranks=[/google/i,/neural|natural/i,/premium|enhanced/i,/kanya|siri/i,/samantha|aria|jenny/i];for(const r of ranks){const m=use.find(v=>r.test(v.name));if(m)return m;}const online=use.find(v=>v.localService===false);return online||use[0];}
-function speak(text,lang){if(!('speechSynthesis' in window)||!text)return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);const v=pickVoice(lang);if(v){u.voice=v;u.lang=v.lang;}else{u.lang=lang==='th'?'th-TH':'en-US';}u.rate=lang==='th'?0.95:0.95;u.pitch=1.0;u.volume=1;window.speechSynthesis.speak(u);}catch(_){}}
+function pickVoice(lang){
+  const pref=lang==='th'?'th':'en';
+  let vs=(_voices&&_voices.length)?_voices:((window.speechSynthesis&&window.speechSynthesis.getVoices())||[]);
+  vs=vs.filter(v=>(v.lang||'').toLowerCase().indexOf(pref)===0);
+  if(pref==='en'){const us=vs.filter(v=>(v.lang||'').toLowerCase().indexOf('en-us')===0);if(us.length)vs=us;}
+  if(!vs.length)return null;
+  const bad=/compact|eloquence|espeak/i;
+  const pool=vs.filter(v=>!bad.test(v.name));
+  const use=pool.length?pool:vs;
+  /* === Natural Voice Picker (v3.1) === */
+  /* ลำดับความสมจริง: Google > Neural > Premium > Female names > Online */
+  const ranks=[
+    /google.*thai|google.*ไทย/i,  /* Google Thai (best on Chrome Android) */
+    /google/i,                      /* Google (any) */
+    /neural|natural|wavenet/i,     /* Neural TTS */
+    /premium|enhanced/i,           /* Premium voices */
+    /pattara|narisa|kanya/i,       /* Thai female names */
+    /siri|samantha|aria|jenny/i    /* iOS/Windows female names */
+  ];
+  for(const r of ranks){const m=use.find(v=>r.test(v.name));if(m)return m;}
+  /* Prefer female voices (warmer for children) */
+  const female=use.find(v=>/female|หญิง|pattara|narisa|kanya|siri|samantha|aria|jenny|zira/i.test(v.name));
+  if(female)return female;
+  /* Prefer online (cloud) voices — usually better quality */
+  const online=use.find(v=>v.localService===false);
+  return online||use[0];
+}
+
+/* === Natural TTS Helpers (v3.1) === */
+
+/* Convert numbers 0-99 to Thai words */
+function numToThai(n){
+  n=parseInt(n,10);if(isNaN(n)||n<0)return ''+n;
+  if(n===0)return 'ศูนย์';
+  const units=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  const tens=['','สิบ','ยี่สิบ','สามสิบ','สี่สิบ','ห้าสิบ','หกสิบ','เจ็ดสิบ','แปดสิบ','เก้าสิบ'];
+  let result='';
+  if(n>=10){result+=tens[Math.floor(n/10)];n=n%10;}
+  if(n>0){
+    if(n===1&&result)result+='เอ็ด';
+    else if(n===1)result+='หนึ่ง';
+    else result+=units[n];
+  }
+  return result;
+}
+
+/* Pre-process text before speaking */
+function preprocessTTS(text,lang){
+  if(!text)return '';
+  let t=text;
+  /* Remove common emojis */
+  t=t.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]/gu,'');
+  /* Convert numbers 0-99 to Thai words */
+  if(lang==='th'){
+    t=t.replace(/\b(\d{1,2})\b/g,function(m,n){return numToThai(n);});
+  }
+  /* Normalize whitespace */
+  t=t.replace(/\s+/g,' ').trim();
+  return t;
+}
+
+/* Split text into sentences for natural pauses */
+function splitSentences(text){
+  if(!text)return [];
+  /* Split by Thai/English punctuation and particles */
+  const parts=text.split(/([.!?]+\s+|,|;|ฯ|ๆ|\sครับ\s|\sจ้ะ\s|\sนะ\s|\sค่ะ\s|\sแล้ว\s|\sแต่\s|\sและ\s)/);
+  const sentences=[];
+  let current='';
+  for(let i=0;i<parts.length;i++){
+    if(!parts[i])continue;
+    current+=parts[i];
+    /* If next part is a delimiter, append it to current sentence */
+    if(i+1<parts.length && /^[.!?]/.test(parts[i+1])){
+      current+=parts[i+1];i++;
+    }
+    if(current.trim()){
+      sentences.push(current.trim());
+      current='';
+    }
+  }
+  if(current.trim())sentences.push(current.trim());
+  return sentences.filter(s=>s.length>0);
+}
+
+/* Slight pitch variation per sentence to avoid monotone */
+function varyPitch(sentenceIndex,basePitch){
+  const pattern=[0,-0.04,0.04,0,-0.03,0.03];
+  const delta=pattern[sentenceIndex%pattern.length];
+  return Math.max(0.5,Math.min(2.0,basePitch+delta));
+}
+function speak(text,lang,emotion){
+  if(!('speechSynthesis' in window)||!text)return;
+  try{window.speechSynthesis.cancel();}catch(_){}
+  /* === Natural TTS Pro (v3.1) === */
+  /* Pre-process text */
+  const processed=preprocessTTS(text,lang);
+  if(!processed)return;
+  /* Emotion config */
+  const E={
+    cheerful:{rate:1.05,pitch:1.15,volume:1.0,pause:180},
+    excited: {rate:1.15,pitch:1.25,volume:1.0,pause:120},
+    happy:   {rate:1.0, pitch:1.1, volume:1.0,pause:200},
+    calm:    {rate:0.92,pitch:1.0, volume:0.95,pause:280},
+    soft:    {rate:0.88,pitch:0.95,volume:0.85,pause:320},
+    sleepy:  {rate:0.78,pitch:0.85,volume:0.7, pause:450},
+    sad:     {rate:0.85,pitch:0.8, volume:0.85,pause:350},
+    whisper: {rate:0.75,pitch:0.85,volume:0.55,pause:400},
+    proud:   {rate:0.95,pitch:1.05,volume:1.0,pause:250},
+    default: {rate:0.95,pitch:1.0, volume:1.0,pause:220}
+  };
+  const cfg=E[emotion]||E.default;
+  /* Split into sentences for natural pauses */
+  const sentences=splitSentences(processed);
+  if(sentences.length===0)return;
+  /* Speak each sentence with slight pitch variation */
+  let i=0;
+  function speakNext(){
+    if(i>=sentences.length)return;
+    const u=new SpeechSynthesisUtterance(sentences[i]);
+    const v=pickVoice(lang);
+    if(v){u.voice=v;u.lang=v.lang;}else{u.lang=lang==='th'?'th-TH':'en-US';}
+    u.rate=cfg.rate;
+    u.pitch=varyPitch(i,cfg.pitch);  /* slight variation per sentence */
+    u.volume=cfg.volume;
+    u.onend=function(){
+      i++;
+      if(i<sentences.length){
+        /* Natural pause between sentences */
+        setTimeout(speakNext,cfg.pause);
+      }
+    };
+    u.onerror=function(){i++;if(i<sentences.length)setTimeout(speakNext,cfg.pause);};
+    try{window.speechSynthesis.speak(u);}catch(_){i++;if(i<sentences.length)setTimeout(speakNext,cfg.pause);}
+  }
+  speakNext();
+}
 function speakSequence(parts,lang,finalText,finalLang){if(!('speechSynthesis' in window))return;parts=(parts||[]).filter(Boolean);try{window.speechSynthesis.cancel();}catch(_){}let i=0;function say(text,l,after){if(!text){after&&after();return;}const u=new SpeechSynthesisUtterance(text);const v=pickVoice(l);if(v){u.voice=v;u.lang=v.lang;}else u.lang=l==='th'?'th-TH':'en-US';u.rate=l==='th'?0.95:0.92;u.pitch=1.0;let done=false;const go=()=>{if(done)return;done=true;after&&after();};u.onend=go;u.onerror=go;setTimeout(go,1400);try{window.speechSynthesis.speak(u);}catch(_){go();}}function next(){if(i<parts.length){say(parts[i++],lang,next);}else if(finalText){setTimeout(()=>say(finalText,finalLang,null),200);}}next();}
 
 function tracerStatus(T,t){T.cfg.status.textContent=t;}
@@ -1611,6 +1816,214 @@ if($('liteBtn'))$('liteBtn').addEventListener('click',toggleLite);
   console.log('%c🌟 สะสมดาว — ฟรี 100% สำหรับครอบครัว', 'color:#FFD75E;font-size:14px;font-weight:bold');
   console.log('%c💯 Free Forever Pledge: ไม่มีค่าใช้จ่าย ไม่มีโฆษณา ไม่มีการล็อกฟีเจอร์', 'color:#2FD3D3');
 })();
+
+/* ===== Phase 2: Mascot Real Expressions ===== */
+window.__mascotExpr = 'idle';
+window.setMascotExpression = function(expr, duration){
+  expr = expr || 'idle';
+  const valid = ['idle','happy','sleepy','excited','thinking','proud','sad','confused'];
+  if (valid.indexOf(expr) === -1) expr = 'idle';
+  const m = document.getElementById('mascot');
+  if (!m) return;
+  // remove all exp-* classes
+  valid.forEach(function(v){ m.classList.remove('exp-' + v); });
+  m.classList.add('exp-' + expr);
+  window.__mascotExpr = expr;
+  // auto-revert to idle after duration (if specified)
+  if (duration && duration > 0 && expr !== 'idle') {
+    setTimeout(function(){
+      if (window.__mascotExpr === expr) window.setMascotExpression('idle');
+    }, duration);
+  }
+};
+/* Hook mascotCheer to use 'excited' then 'happy' */
+var _origMascotCheer = window.mascotCheer;
+if (typeof _origMascotCheer === 'function') {
+  window.mascotCheer = function(){
+    window.setMascotExpression('excited', 800);
+    setTimeout(function(){ window.setMascotExpression('happy', 1500); }, 800);
+    if (typeof _origMascotCheer === 'function') _origMascotCheer.apply(this, arguments);
+  };
+}
+/* Mascot click → random expression + greeting */
+document.addEventListener('DOMContentLoaded', function(){
+  var m = document.getElementById('mascot');
+  if (m) {
+    m.addEventListener('click', function(){
+      var exprs = ['happy','excited','thinking','proud'];
+      var pick = exprs[Math.floor(Math.random()*exprs.length)];
+      window.setMascotExpression(pick, 2000);
+    });
+  }
+});
+/* Auto-check bedtime mode based on hour */
+function checkBedtimeMode(){
+  var hour = new Date().getHours();
+  var btn = document.getElementById('bedtimeBtn');
+  if (!btn) return;
+  if (hour >= 19 || hour < 6) {
+    btn.classList.add('show');
+    // also set mascot to sleepy
+    if (window.__mascotExpr === 'idle') window.setMascotExpression('sleepy');
+  } else {
+    btn.classList.remove('show');
+  }
+}
+checkBedtimeMode();
+setInterval(checkBedtimeMode, 60000);
+
+/* ===== Phase 3: Bedtime Story Mode ===== */
+var bedtimeState = { story: '', isPlaying: false, isLoading: false };
+
+async function generateBedtimeStory(){
+  if (!window.state) return;
+  bedtimeState.isLoading = true;
+  var storyEl = document.getElementById('bedtimeStory');
+  var playBtn = document.getElementById('bedtimePlay');
+  if (storyEl) storyEl.innerHTML = '<span class="bedtime-loading"></span> กำลังเตรียมนิทาน...';
+  if (playBtn) playBtn.disabled = true;
+
+  // เก็บข้อมูลเด็ก
+  var name = state.name || 'หนู';
+  var stars = state.count || 0;
+  var tasks = (state.done && state.done.ids && state.done.ids.length) ? state.done.ids.length : 0;
+  var streak = (state.streak && state.streak.current) ? state.streak.current : 0;
+  var avatar = state.avatar || '🐻';
+
+  // สร้าง prompt สำหรับ LLM
+  var prompt = 'เขียนนิทานก่อนนอนสั้นๆ ภาษาไทย ประมาณ 150-200 ตัวอักษร (1-2 นาทีอ่าน) ';
+  prompt += 'สำหรับเด็กชื่อ "' + name + '" ';
+  prompt += 'วันนี้หนูทำงานบ้านครบ ' + tasks + ' อย่าง ได้ ' + stars + ' ดาว ';
+  if (streak > 0) prompt += 'และทำต่อเนื่อง ' + streak + ' วัน ';
+  prompt += 'นิทานควร: มีเสียงดาว พระจันทร์ ความฝัน อบอุ่น สงบ ไม่มีตัวร้าย จบแบบมีความสุข ';
+  prompt += 'ใช้คำว่า "' + name + '" 1-2 ครั้ง ไม่ใช้คำยาก ไม่ใช้ emoji ไม่ใช้ markdown ';
+  prompt += 'เริ่มต้นด้วย "เมื่อคืนนี้..." หรือ "กาลครั้งหนึ่ง..."';
+
+  try {
+    // ใช้ z-ai SDK ผ่าน fetch ไปยัง API ของเรา (ต้องสร้าง api route)
+    // หรือใช้ fallback: สร้างจาก template
+    var story = await fetchBedtimeStory(prompt);
+    bedtimeState.story = story;
+    if (storyEl) storyEl.textContent = story;
+    if (playBtn) playBtn.disabled = false;
+  } catch(e) {
+    console.error('Bedtime story error:', e);
+    // fallback: ใช้ template สำเร็จรูป
+    var fallback = generateFallbackStory(name, stars, tasks, streak);
+    bedtimeState.story = fallback;
+    if (storyEl) storyEl.textContent = fallback;
+    if (playBtn) playBtn.disabled = false;
+  }
+  bedtimeState.isLoading = false;
+}
+
+async function fetchBedtimeStory(prompt){
+  // ลองเรียก API endpoint ก่อน (ถ้ามี)
+  // ถ้าไม่มี จะใช้ fallback
+  if (typeof ZAI !== 'undefined' && ZAI.chat) {
+    try {
+      var zai = await ZAI.create();
+      var response = await zai.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.8,
+        max_tokens: 300
+      });
+      return response.choices[0].message.content.trim();
+    } catch(e) {
+      throw e;
+    }
+  }
+  throw new Error('No LLM available');
+}
+
+function generateFallbackStory(name, stars, tasks, streak){
+  var templates = [
+    'เมื่อคืนนี้ ดาวดวงเล็กๆ ดวงหนึ่งเกิดขึ้นเหนือท้องฟ้า ดาวดวงนั้นมีชื่อว่า "ดาวของ' + name + '" เพราะวันนี้' + name + 'เก่งมาก ทำงานบ้านครบ ' + tasks + ' อย่าง ได้ดาวไป ' + stars + ' ดวง ดาวแต่ละดวงเปล่งประกายอบอุ่น ส่งแสงนุ่มนวลลงมายังห้องนอนของ' + name + ' พระจันทร์ยิ้มให้ สายลมพัดเบาๆ ขนนก little birdies หลับตาลง แล้ว' + name + 'ก็หลับฝันดี ไปนะจ้ะ',
+    'กาลครั้งหนึ่ง ในป่าแห่งดวงดาว มีกระต่ายน้อยชื่อ' + name + ' กระต่ายน้อยเก็บดาวได้ ' + stars + ' ดวงวันนี้ ด้วยความขยันทำงานบ้าน ' + tasks + ' อย่าง ดาวแต่ละดวงร้องเพลงกล่อม ซู่ซู่ ซาซา พระจันทร์เต็มดวงมองลงมา ยิ้มให้กระต่ายน้อย ลมพัดผ่านต้นไม้ ใบไม้สีเงินสะท้อนแสงดาว แล้ว' + name + 'ก็หลับสบายไปในคืนที่เต็มไปด้วยดาว',
+    'คืนนี้ฟ้าค่ำเงียบสงบ ' + name + 'น้อยของเรา ทำดีทั้งวัน ได้ดาวไป ' + stars + ' ดวง ดาวแต่ละดวงจะคอยเป็นเพื่อนในความฝัน พระจันทร์เป็นประภาคาร ส่องทางให้' + name + 'เดินทางไปในโลกแห่งจินตนาการ นั่นมีหมีน้อย กระต่าย สิงห์โต ที่คอยรอต้อนรับ ทุกอย่างอบอุ่น ปลอดภัย แล้ว' + name + 'ก็หลับตาลง ฝันดีนะจ้ะ'
+  ];
+  return templates[Math.floor(Math.random()*templates.length)];
+}
+
+function playBedtimeStory(){
+  if (!bedtimeState.story || bedtimeState.isPlaying) return;
+  bedtimeState.isPlaying = true;
+  var playBtn = document.getElementById('bedtimePlay');
+  if (playBtn) playBtn.textContent = '⏸️';
+  // ใช้ emotion 'sleepy' หรือ 'soft' เพื่อให้เสียงนุ่มนวล
+  var emotion = (new Date().getHours() >= 21) ? 'sleepy' : 'soft';
+  speak(bedtimeState.story, 'th', emotion);
+  // สลับ expression ของ mascot
+  window.setMascotExpression('thinking', 3000);
+  setTimeout(function(){ window.setMascotExpression('happy', 4000); }, 3000);
+  setTimeout(function(){ window.setMascotExpression('sleepy'); }, 7000);
+  // เมื่อเล่าจบ
+  var checkEnd = setInterval(function(){
+    if (!window.speechSynthesis.speaking) {
+      clearInterval(checkEnd);
+      bedtimeState.isPlaying = false;
+      if (playBtn) playBtn.textContent = '▶️';
+      window.setMascotExpression('sleepy');
+    }
+  }, 500);
+}
+
+function stopBedtimeStory(){
+  try { window.speechSynthesis.cancel(); } catch(_){}
+  bedtimeState.isPlaying = false;
+  var playBtn = document.getElementById('bedtimePlay');
+  if (playBtn) playBtn.textContent = '▶️';
+}
+
+function openBedtimeStory(){
+  var ov = document.getElementById('bedtimeOverlay');
+  if (!ov) return;
+  ov.classList.add('show');
+  // เปลี่ยน mascot เป็น sleepy
+  window.setMascotExpression('sleepy');
+  // สร้างนิทานใหม่ทันที
+  generateBedtimeStory();
+}
+
+function closeBedtimeStory(){
+  var ov = document.getElementById('bedtimeOverlay');
+  if (ov) ov.classList.remove('show');
+  stopBedtimeStory();
+  // คืน expression ตามเวลา
+  var hour = new Date().getHours();
+  if (hour >= 19 || hour < 6) window.setMascotExpression('sleepy');
+  else window.setMascotExpression('idle');
+}
+
+/* Hook events */
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('bedtimeBtn');
+  var close = document.getElementById('bedtimeClose');
+  var play = document.getElementById('bedtimePlay');
+  var stop = document.getElementById('bedtimeStop');
+  var newStory = document.getElementById('bedtimeNewStory');
+  if (btn) btn.addEventListener('click', openBedtimeStory);
+  if (close) close.addEventListener('click', closeBedtimeStory);
+  if (play) play.addEventListener('click', function(){
+    if (bedtimeState.isPlaying) {
+      try { window.speechSynthesis.cancel(); } catch(_){}
+      bedtimeState.isPlaying = false;
+      play.textContent = '▶️';
+    } else {
+      playBedtimeStory();
+    }
+  });
+  if (stop) stop.addEventListener('click', stopBedtimeStory);
+  if (newStory) newStory.addEventListener('click', function(){
+    stopBedtimeStory();
+    generateBedtimeStory();
+  });
+  // ปิด overlay เมื่อคลิกข้างนอก
+  var ov = document.getElementById('bedtimeOverlay');
+  if (ov) ov.addEventListener('click', function(e){
+    if (e.target === ov) closeBedtimeStory();
+  });
+});
 </script>
 </body>
 </html>
