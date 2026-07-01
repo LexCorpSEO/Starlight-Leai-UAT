@@ -939,31 +939,81 @@ function pickVoice(lang){
   const bad=/compact|eloquence|espeak/i;
   const pool=vs.filter(v=>!bad.test(v.name));
   const use=pool.length?pool:vs;
-  /* === Natural Voice Picker (v3.1) === */
-  /* ลำดับความสมจริง: Google > Neural > Premium > Female names > Online */
-  const ranks=[
-    /google.*thai|google.*ไทย/i,  /* Google Thai (best on Chrome Android) */
-    /google/i,                      /* Google (any) */
-    /neural|natural|wavenet/i,     /* Neural TTS */
-    /premium|enhanced/i,           /* Premium voices */
-    /pattara|narisa|kanya/i,       /* Thai female names */
-    /siri|samantha|aria|jenny/i    /* iOS/Windows female names */
-  ];
-  for(const r of ranks){const m=use.find(v=>r.test(v.name));if(m)return m;}
-  /* Prefer female voices (warmer for children) */
-  const female=use.find(v=>/female|หญิง|pattara|narisa|kanya|siri|samantha|aria|jenny|zira/i.test(v.name));
+
+  /* === Ultra Smart Voice Picker (v3.3) === */
+  /* Tier 1: Google Thai (best on Android Chrome) */
+  const googleThai=use.find(v=>/google/i.test(v.name)&&(v.lang||'').toLowerCase().indexOf('th')===0);
+  if(googleThai)return googleThai;
+  /* Tier 2: Google (any) */
+  const googleAny=use.find(v=>/google/i.test(v.name));
+  if(googleAny)return googleAny;
+  /* Tier 3: Neural/Natural/WaveNet */
+  const neural=use.find(v=>/neural|natural|wavenet/i.test(v.name));
+  if(neural)return neural;
+  /* Tier 4: Premium/Enhanced */
+  const premium=use.find(v=>/premium|enhanced/i.test(v.name));
+  if(premium)return premium;
+  /* Tier 5: Thai female names */
+  const thaiFemale=use.find(v=>/pattara|narisa|kanya|premwaree|somsi/i.test(v.name));
+  if(thaiFemale)return thaiFemale;
+  /* Tier 6: iOS/Windows female */
+  const iosFemale=use.find(v=>/siri|samantha|aria|jenny|zira/i.test(v.name));
+  if(iosFemale)return iosFemale;
+  /* Tier 7: Any female */
+  const female=use.find(v=>/female|หญิง/i.test(v.name));
   if(female)return female;
-  /* Prefer online (cloud) voices — usually better quality */
+  /* Tier 8: Online (cloud) — usually better quality */
   const online=use.find(v=>v.localService===false);
   return online||use[0];
 }
 
+/* === Voice preloading (v3.3) === */
+function preloadVoices(){
+  if(!('speechSynthesis' in window))return;
+  try{
+    _voices=window.speechSynthesis.getVoices()||[];
+    /* Trigger voice loading on Chrome */
+    if(_voices.length===0){
+      const u=new SpeechSynthesisUtterance(' ');
+      u.volume=0;
+      window.speechSynthesis.speak(u);
+    }
+  }catch(_){}
+}
+/* Warm up voices on first user interaction */
+var _voiceWarmup=false;
+function warmupVoices(){
+  if(_voiceWarmup)return;
+  _voiceWarmup=true;
+  try{
+    const u=new SpeechSynthesisUtterance(' ');
+    u.volume=0;
+    u.lang='th-TH';
+    window.speechSynthesis.speak(u);
+  }catch(_){}
+}
+
 /* === Natural TTS Helpers (v3.1) === */
 
-/* Convert numbers 0-99 to Thai words */
+/* === Ultra Natural Thai TTS Helpers (v3.3) === */
+
+/* Convert numbers 0-9999 to Thai words */
 function numToThai(n){
   n=parseInt(n,10);if(isNaN(n)||n<0)return ''+n;
   if(n===0)return 'ศูนย์';
+  if(n<100)return _numUnder100(n);
+  if(n<1000000){
+    const hundreds=Math.floor(n/100);
+    const rest=n%100;
+    let result='';
+    if(hundreds>0)result+=_numUnder100(hundreds)+'ร้อย';
+    if(rest>0)result+=_numUnder100(rest);
+    return result;
+  }
+  return ''+n;
+}
+function _numUnder100(n){
+  if(n===0)return '';
   const units=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
   const tens=['','สิบ','ยี่สิบ','สามสิบ','สี่สิบ','ห้าสิบ','หกสิบ','เจ็ดสิบ','แปดสิบ','เก้าสิบ'];
   let result='';
@@ -976,95 +1026,94 @@ function numToThai(n){
   return result;
 }
 
-/* Pre-process text before speaking */
-function preprocessTTS(text,lang){
-  if(!text)return '';
+/* Expand common Thai abbreviations */
+function expandAbbrevs(text){
   let t=text;
-  /* Remove common emojis */
-  t=t.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]/gu,'');
-  /* Convert numbers 0-99 to Thai words */
-  if(lang==='th'){
-    t=t.replace(/\b(\d{1,2})\b/g,function(m,n){return numToThai(n);});
-  }
-  /* Normalize whitespace */
-  t=t.replace(/\s+/g,' ').trim();
+  t=t.replace(/ฯ/g,'');
+  t=t.replace(/ฯลฯ/g,'และอื่นๆ');
+  t=t.replace(/(\S+)?ๆ/g,function(m,p1){return (p1?p1+' ':'')+(p1||'');});
   return t;
 }
 
-/* Split text into sentences for natural pauses */
+/* Pre-process text — comprehensive Thai NLP */
+function preprocessTTS(text,lang){
+  if(!text)return '';
+  let t=text;
+  /* Remove emojis (all ranges) */
+  t=t.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{FE00}-\u{FE0F}\u{200D}]/gu,'');
+  /* Remove invisible chars */
+  t=t.replace(/[\u200B-\u200D\uFEFF]/g,'');
+  /* Expand Thai abbreviations */
+  if(lang==='th')t=expandAbbrevs(t);
+  /* Convert numbers 0-9999 to Thai words */
+  if(lang==='th')t=t.replace(/\b(\d{1,4})\b/g,function(m,n){return numToThai(n);});
+  /* Normalize whitespace */
+  t=t.replace(/[ \t]+/g,' ');
+  t=t.replace(/\n+/g,'. ');
+  return t.trim();
+}
+
+/* Smart sentence splitting — Thai-aware */
 function splitSentences(text){
   if(!text)return [];
-  /* Split by Thai/English punctuation and particles */
-  const parts=text.split(/([.!?]+\s+|,|;|ฯ|ๆ|\sครับ\s|\sจ้ะ\s|\sนะ\s|\sค่ะ\s|\sแล้ว\s|\sแต่\s|\sและ\s)/);
+  const parts=text.split(/([.!?]+\s+|,|;|:|ฯ|ๆ|\sแล้ว\s|\sแต่\s|\sและ\s|\sหรือ\s|\sเพราะ\s|\sเมื่อ\s)/);
   const sentences=[];
   let current='';
   for(let i=0;i<parts.length;i++){
     if(!parts[i])continue;
-    current+=parts[i];
-    /* If next part is a delimiter, append it to current sentence */
-    if(i+1<parts.length && /^[.!?]/.test(parts[i+1])){
-      current+=parts[i+1];i++;
-    }
-    if(current.trim()){
-      sentences.push(current.trim());
-      current='';
+    const part=parts[i];
+    const isDelim=/^([.!?]+\s+|,|;|:|ฯ|ๆ)/.test(part);
+    if(isDelim){
+      current+=part;
+      if(current.trim()){sentences.push(current.trim());current='';}
+    }else{
+      current+=part;
     }
   }
   if(current.trim())sentences.push(current.trim());
-  return sentences.filter(s=>s.length>0);
+  return sentences.filter(s=>s.length>1);
 }
 
-/* Slight pitch variation per sentence to avoid monotone */
-function varyPitch(sentenceIndex,basePitch){
-  const pattern=[0,-0.04,0.04,0,-0.03,0.03];
-  const delta=pattern[sentenceIndex%pattern.length];
+/* Smart pause duration based on punctuation */
+function pauseForPunctuation(sentence,nextSentence){
+  if(!sentence)return 200;
+  const lastChar=sentence.slice(-1);
+  if(/[.!?]/.test(lastChar))return 400;
+  if(/[,;:]/.test(lastChar))return 250;
+  if(/(จ้ะ|นะ|ครับ|ค่ะ|คับ)$/.test(sentence))return 280;
+  return 200;
+}
+
+/* Pitch contour — varies based on sentence position and content */
+function varyPitch(sentenceIndex,totalSentences,basePitch,sentence){
+  const pattern=[0,-0.03,0.04,0,-0.02,0.03,-0.04,0.02];
+  let delta=pattern[sentenceIndex%pattern.length];
+  if(/[?？]$/.test(sentence))delta+=0.1;
+  if(/(ครับ|ค่ะ|คับ)$/.test(sentence))delta-=0.05;
+  if(sentenceIndex===0)delta+=0.05;
+  if(sentenceIndex===totalSentences-1)delta-=0.05;
+  if(/(เย้|ดีใจ|สุดยอด|เก่งมาก)/i.test(sentence))delta+=0.08;
+  if(/(สงบ|นอน|หลับ|ฝันดี|นุ่ม|เบา)/i.test(sentence))delta-=0.06;
   return Math.max(0.5,Math.min(2.0,basePitch+delta));
 }
-function speak(text,lang,emotion){
-  if(!('speechSynthesis' in window)||!text)return;
-  try{window.speechSynthesis.cancel();}catch(_){}
-  /* === Natural TTS Pro (v3.1) === */
-  /* Pre-process text */
-  const processed=preprocessTTS(text,lang);
-  if(!processed)return;
-  /* Emotion config */
-  const E={
-    cheerful:{rate:1.05,pitch:1.15,volume:1.0,pause:180},
-    excited: {rate:1.15,pitch:1.25,volume:1.0,pause:120},
-    happy:   {rate:1.0, pitch:1.1, volume:1.0,pause:200},
-    calm:    {rate:0.92,pitch:1.0, volume:0.95,pause:280},
-    soft:    {rate:0.88,pitch:0.95,volume:0.85,pause:320},
-    sleepy:  {rate:0.78,pitch:0.85,volume:0.7, pause:450},
-    sad:     {rate:0.85,pitch:0.8, volume:0.85,pause:350},
-    whisper: {rate:0.75,pitch:0.85,volume:0.55,pause:400},
-    proud:   {rate:0.95,pitch:1.05,volume:1.0,pause:250},
-    default: {rate:0.95,pitch:1.0, volume:1.0,pause:220}
-  };
-  const cfg=E[emotion]||E.default;
-  /* Split into sentences for natural pauses */
-  const sentences=splitSentences(processed);
-  if(sentences.length===0)return;
-  /* Speak each sentence with slight pitch variation */
-  let i=0;
-  function speakNext(){
-    if(i>=sentences.length)return;
-    const u=new SpeechSynthesisUtterance(sentences[i]);
-    const v=pickVoice(lang);
-    if(v){u.voice=v;u.lang=v.lang;}else{u.lang=lang==='th'?'th-TH':'en-US';}
-    u.rate=cfg.rate;
-    u.pitch=varyPitch(i,cfg.pitch);  /* slight variation per sentence */
-    u.volume=cfg.volume;
-    u.onend=function(){
-      i++;
-      if(i<sentences.length){
-        /* Natural pause between sentences */
-        setTimeout(speakNext,cfg.pause);
-      }
-    };
-    u.onerror=function(){i++;if(i<sentences.length)setTimeout(speakNext,cfg.pause);};
-    try{window.speechSynthesis.speak(u);}catch(_){i++;if(i<sentences.length)setTimeout(speakNext,cfg.pause);}
-  }
-  speakNext();
+
+/* Rate adjustment per sentence */
+function varyRate(sentenceIndex,baseRate,sentence){
+  let rate=baseRate;
+  if(sentence.length>80)rate*=0.92;
+  if(sentence.length>50&&/[.!?]$/.test(sentence))rate*=0.95;
+  if(sentence.length<15&&/[!！]$/.test(sentence))rate*=1.1;
+  return Math.max(0.5,Math.min(2.0,rate));
+}
+
+/* Detect sentence emotion for micro-expression */
+function detectSentenceEmotion(sentence,baseEmotion){
+  if(/(เย้|ดีใจ|สุดยอด|เก่งมาก|ภูมิใจ|เยี่ยม)/i.test(sentence))return 'excited';
+  if(/(หลับ|นอน|ฝันดี|นุ่ม|เบา|สงบ|เงียบ)/i.test(sentence))return 'sleepy';
+  if(/(เศร้า|เสียใจ|น้อยใจ|เหงา)/i.test(sentence))return 'sad';
+  if(/(ดีใจมาก|สุดยอด|โอ้โห|ว้าว)/i.test(sentence))return 'excited';
+  if(/(คิดถึง|รัก|ห่วงใย)/i.test(sentence))return 'soft';
+  return baseEmotion;
 }
 function speakSequence(parts,lang,finalText,finalLang){if(!('speechSynthesis' in window))return;parts=(parts||[]).filter(Boolean);try{window.speechSynthesis.cancel();}catch(_){}let i=0;function say(text,l,after){if(!text){after&&after();return;}const u=new SpeechSynthesisUtterance(text);const v=pickVoice(l);if(v){u.voice=v;u.lang=v.lang;}else u.lang=l==='th'?'th-TH':'en-US';u.rate=l==='th'?0.95:0.92;u.pitch=1.0;let done=false;const go=()=>{if(done)return;done=true;after&&after();};u.onend=go;u.onerror=go;setTimeout(go,1400);try{window.speechSynthesis.speak(u);}catch(_){go();}}function next(){if(i<parts.length){say(parts[i++],lang,next);}else if(finalText){setTimeout(()=>say(finalText,finalLang,null),200);}}next();}
 
